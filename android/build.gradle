@@ -1,12 +1,11 @@
 buildscript {
     ext {
         kotlin_version = '1.9.22'
-        // Define your compileSdkVersion and other common properties in root ext if desired.
         compileSdkVersion = 34
         minSdkVersion = 21
         targetSdkVersion = 34
-        // You can also define the default namespace for your app module here, if applicable.
-        defaultNamespace = "com.example.myenglish"
+        // Set your default namespace (from your AndroidManifest.xml package attribute)
+        defaultNamespace = "com.service.ramasser"
     }
     repositories {
         google()
@@ -34,21 +33,24 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
-// Auto-assign a namespace to any Android subproject that does not have one
-subprojects {
-    afterEvaluate { project ->
-        // Check if the subproject is an Android module
+// Automatically assign a namespace to any Android subproject that doesn't define one
+subprojects { project ->
+    def setNamespace = {
         if (project.hasProperty('android')) {
             project.android {
-                // If namespace is not defined or is empty, set it based on the project group or a default pattern
+                // If namespace is missing or empty, set it to the defaultNamespace
                 if (!hasProperty("namespace") || namespace == null || namespace.toString().trim().isEmpty()) {
-                    // Use project.group if defined; otherwise, default to "com.example.<projectName>"
-                    namespace = project.group?.toString() ?: "com.example.${project.name}"
-                    // Optionally, you could force a specific default namespace:
-                    // namespace = defaultNamespace
+                    namespace = defaultNamespace
                 }
             }
         }
+    }
+    if (project.state.executed) {
+        // If already evaluated, set namespace immediately
+        setNamespace()
+    } else {
+        // Otherwise, schedule after evaluation
+        project.afterEvaluate { setNamespace() }
     }
 }
 
