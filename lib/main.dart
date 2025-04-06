@@ -14,12 +14,20 @@ import 'package:myenglish/core/utils/services/prefs.dart';
 import 'package:myenglish/features/onboarding/presentation/common/screens/splash_screen.dart';
 import 'package:resize/resize.dart';
 
+// The following functionalities are disabled to resolve compilation issues:
+// file_picker, video_thumbnail, omni_jitsi_meet, intl_phone_field
+// Their related imports and any usage have been removed.
+// import 'package:file_picker/file_picker.dart';
+// import 'package:video_thumbnail/video_thumbnail.dart';
+// import 'package:omni_jitsi_meet/omni_jitsi_meet.dart';
+// import 'package:intl_phone_field/intl_phone_field.dart';
+
 import 'di/di.dart';
 
-var didReceiveLocalNotificationStream = StreamController<String>.broadcast();
+var didReceiveLocalNotificationStream = StreamController.broadcast();
 
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   try {
     print("212121 Handling a background message:");
     didReceiveLocalNotificationStream.add('refresh');
@@ -29,15 +37,17 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 }
 
-Future<void> main() async {
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlDownloader.initialize();
   await Firebase.initializeApp();
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-    statusBarColor: Colors.transparent,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle.dark.copyWith(
+      statusBarColor: Colors.transparent,
+    ),
+  );
   await Prefs().instance();
 
   await PushNotificationService().setupInteractedMessage();
@@ -52,10 +62,11 @@ Future<void> main() async {
 
   // Triggered on receiving a Message when App is in background
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey navigatorKey = GlobalKey();
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -72,6 +83,7 @@ class _MyApp extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    // The internetProvider remains in use if defined in your dependency injection.
     var mInternetProvider = ref.watch(internetProvider);
     return Resize(
       size: const Size(393, 852),
