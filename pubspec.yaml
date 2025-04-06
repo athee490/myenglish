@@ -1,8 +1,6 @@
 name: myenglish
 description: A new Flutter project.
-
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -32,8 +30,7 @@ dependencies:
   file_picker: ^10.0.0
   video_player: ^2.4.10
   video_thumbnail_imageview: ^0.0.5
-  video_thumbnail:
-    path: ./local_plugins/video_thumbnail-0.5.3
+  video_thumbnail: ^0.5.3
   image_picker: ^0.8.6
   cached_network_image: ^3.3.1
   permission_handler: ^10.2.0
@@ -41,19 +38,15 @@ dependencies:
   flutter_local_notifications: ^17.2.2
   path_provider: ^2.0.14
   auto_size_text: ^3.0.0
-  
-  omni_jitsi_meet:
-    path: ./local_plugins/omni_jitsi_meet-1.0.14
+  omni_jitsi_meet: ^1.0.14
   flutter_rating_bar: ^4.0.1
   firebase_crashlytics: ^3.3.1
   crypto: ^3.0.3
   flutter_downloader: ^1.11.7
   fl_downloader: ^2.0.2
-   # Changed from a local path to the hosted version
   lottie: ^2.2.0
   chewie: ^1.8.0
-  intl_phone_field:
-    path: packages/country_code_picker
+  intl_phone_field: ^3.1.0
 
 dev_dependencies:
   flutter_test:
