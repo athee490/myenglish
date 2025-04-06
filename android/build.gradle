@@ -4,7 +4,7 @@ buildscript {
         compileSdkVersion = 34
         minSdkVersion = 21
         targetSdkVersion = 34
-        // Set your default namespace (from your AndroidManifest.xml package attribute)
+        // Set your default namespace as per your AndroidManifest.xml
         defaultNamespace = "com.service.ramasser"
     }
     repositories {
@@ -33,24 +33,18 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
-// Automatically assign a namespace to any Android subproject that doesn't define one
+// Use beforeEvaluate to set namespace on Android subprojects that don't have one defined
 subprojects { project ->
-    def setNamespace = {
-        if (project.hasProperty('android')) {
+    project.beforeEvaluate {
+        if (project.hasProperty("android")) {
             project.android {
-                // If namespace is missing or empty, set it to the defaultNamespace
+                // Only set namespace if not already defined (and before configuration is finalized)
                 if (!hasProperty("namespace") || namespace == null || namespace.toString().trim().isEmpty()) {
                     namespace = defaultNamespace
+                    println "Assigned namespace '${namespace}' to project ${project.name}"
                 }
             }
         }
-    }
-    if (project.state.executed) {
-        // If already evaluated, set namespace immediately
-        setNamespace()
-    } else {
-        // Otherwise, schedule after evaluation
-        project.afterEvaluate { setNamespace() }
     }
 }
 
