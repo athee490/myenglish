@@ -1,3 +1,23 @@
+buildscript {
+    ext {
+        kotlin_version = '1.9.22'
+        // Define your compileSdkVersion and other common properties in root ext if desired.
+        compileSdkVersion = 34
+        minSdkVersion = 21
+        targetSdkVersion = 34
+        // You can also define the default namespace for your app module here, if applicable.
+        defaultNamespace = "com.example.myenglish"
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -5,12 +25,31 @@ allprojects {
     }
 }
 
+// Set common build directories
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 subprojects {
     project.evaluationDependsOn(":app")
+}
+
+// Auto-assign a namespace to any Android subproject that does not have one
+subprojects {
+    afterEvaluate { project ->
+        // Check if the subproject is an Android module
+        if (project.hasProperty('android')) {
+            project.android {
+                // If namespace is not defined or is empty, set it based on the project group or a default pattern
+                if (!hasProperty("namespace") || namespace == null || namespace.toString().trim().isEmpty()) {
+                    // Use project.group if defined; otherwise, default to "com.example.<projectName>"
+                    namespace = project.group?.toString() ?: "com.example.${project.name}"
+                    // Optionally, you could force a specific default namespace:
+                    // namespace = defaultNamespace
+                }
+            }
+        }
+    }
 }
 
 tasks.register("clean", Delete) {
